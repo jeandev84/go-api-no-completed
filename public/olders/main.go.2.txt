@@ -1,0 +1,70 @@
+package main
+
+import (
+	"authuser/app/controllers/api"
+	"fmt"
+
+	"github.com/go-martini/martini"
+)
+
+// Точка входа приложения
+func main() {
+
+	fmt.Println("Listening on port :8080")
+
+	/* Создание экземпляра фреймворк "martini" */
+	m := martini.Classic()
+
+	/* Регистрация наши маршруты */
+	m.Get("/", func() string {
+		return "Hello"
+	})
+
+	m.Group("/api", func(r martini.Router) {
+
+		m.Get("/user/current", api.GetCurrentUser)
+		m.Post("/user/register", api.RegisterUser)
+
+		// confirm user /user/confirm?token=werereetwwrwqwwwrreyyertweYZxssgsfwr, /user/confirm/{token}
+		// try if can write like this /user/confirm and after ger param token, /user/confirm/:token
+		m.Get("/user/confirm", api.Confirm)
+
+		m.Post("/user/new", func() string {
+			return "Create new User"
+		})
+
+		m.Post("/user/:id", func() string {
+			return "Find user by id"
+		})
+
+		m.Put("/user/:id/edit", func() string {
+			return "Update user data by id"
+		})
+
+		m.Delete("/user/:id/delete", func() string {
+			return "Delete user by id"
+		})
+	})
+
+	// Слушаем в порте 8080, or run by default m.Run()
+	m.RunOnAddr(":8080")
+}
+
+/*
+func main() {
+
+	fmt.Println("Listening on port :8080")
+
+	// Создаем новый роутер
+	m := martini.Classic()
+
+
+	// Тестирование martini при вызове анонимной функции (anonymous function)
+	m.Get("/", func() string {
+			return "Точка входа приложения!"
+	})
+
+	// m.Run()
+	m.RunOnAddr(":8080")
+}
+*/
